@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سیستم تصمیم‌یار پزشکی ایلیا - جشنواره خوارزمی 1404</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- هدر -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>سیستم تصمیم‌یار پزشکی ایلیا</h1>
+                <span class="tagline">جشنواره خوارزمی 1404</span>
+            </div>
+            <nav class="navbar">
+                <a href="#diagnosis" class="active"><i class="fas fa-camera"></i> تشخیص سرطان پوست</a>
+                <a href="#chat"><i class="fas fa-comment-medical"></i> مشاوره پزشکی</a>
+                <a href="#dose"><i class="fas fa-pills"></i> تعیین دوز دارو</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="diagnosis" class="card">
+            <h2><i class="fas fa-search-plus"></i> تشخیص سرطان پوست با هوش مصنوعی</h2>
+            <p class="section-description">با آپلود تصویر ناحیه مشکوک، سیستم ایلیا به‌طور خودکار با استفاده از شبکه عصبی کانولوشنی (CNN) نوع ضایعه را تشخیص می‌دهد.</p>
+            
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                <p>عکس ناحیه پوست را اینجا رها کنید یا کلیک کنید تا انتخاب شود</p>
+                <input type="file" id="skinImageInput" accept="image/*" hidden>
+                <button class="btn" onclick="document.getElementById('skinImageInput').click()">
+                    <i class="fas fa-folder-open"></i> انتخاب عکس از سیستم
+                </button>
+                <p class="file-info" id="fileInfo">هیچ فایلی انتخاب نشده است</p>
+            </div>
+            
+            <div id="imagePreviewContainer" style="display: none; text-align: center; margin: 1rem 0;">
+                <img id="previewImage" src="" alt="پیش‌نمایش تصویر" style="max-width: 300px; max-height: 300px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div class="process-section">
+                <button class="btn process-btn" id="processBtn" onclick="processImage()">
+                    <i class="fas fa-play-circle"></i> شروع تشخیص با ایلیا
+                </button>
+                <div class="loading" id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>در حال پردازش تصویر با مدل CNN...</p>
+                </div>
+            </div>
+            
+            <div class="result-card" id="resultCard" style="display: none;">
+                <h3><i class="fas fa-diagnosis"></i> نتیجه تشخیص ایلیا</h3>
+                <div class="result-content">
+                    <div class="image-preview">
+                        <img id="resultImage" src="" alt="تصویر تشخیص داده شده">
+                    </div>
+                    <div class="diagnosis-details">
+                        <div class="detail-row">
+                            <span class="detail-label">نوع ضایعه:</span>
+                            <span class="detail-value" id="resultClass">--</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">درجه بدخیمی:</span>
+                            <span class="detail-value" id="resultMalignancy">--</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">درصد اطمینان مدل:</span>
+                            <span class="detail-value confidence-value" id="resultConfidence">--</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="confidenceBar"></div>
+                        </div>
+                        <div class="disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            این نتیجه صرفاً یک پیشنهاد تشخیصی است. برای تشخیص قطعی حتماً به متخصص پوست مراجعه کنید.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-box" style="background: #f0f9ff; padding: 1.5rem; border-radius: 10px; margin-top: 1.5rem;">
+                <h4><i class="fas fa-microscope"></i> فرآیند تشخیص با CNN</h4>
+                <ol style="padding-right: 1.5rem; margin-top: 0.5rem;">
+                    <li>تصویر ورودی به اندازه 128x128 پیکسل نرمال‌سازی می‌شود.</li>
+                    <li>لایه‌های کانولوشنی ویژگی‌های تصویر را استخراج می‌کنند.</li>
+                    <li>لایه‌های Pooling مهم‌ترین ویژگی‌ها را حفظ می‌کنند.</li>
+                    <li>خروجی نهایی احتمال تعلق به 7 کلاس مختلف را نشان می‌دهد.</li>
+                </ol>
+            </div>
+        </section>
+
+
+        <section id="chat" class="card">
+            <h2><i class="fas fa-robot"></i> مشاوره پزشکی با ایلیا</h2>
+            <p class="section-description">دستیار هوش مصنوعی متخصص در پزشکی که می‌تواند به سوالات عمومی پزشکی شما پاسخ دهد.</p>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <div class="message-sender"><i class="fas fa-robot"></i> ایلیا - دستیار پزشکی</div>
+                        <div class="message-content">سلام! من ایلیا هستم، دستیار هوش مصنوعی متخصص در پزشکی. چگونه می‌توانم کمک کنم؟</div>
+                    </div>
+                </div>
+                
+                <div class="chat-input-area">
+                    <input type="text" id="userMessage" placeholder="سوال پزشکی خود را اینجا بنویسید...">
+                    <button class="btn chat-send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i> ارسال
+                    </button>
+                </div>
+                <div class="disclaimer">
+                    <i class="fas fa-info-circle"></i>
+                    این مشاوره جایگزین ویزیت پزشک نمی‌شود. در موارد اورژانسی با 115 تماس بگیرید.
+                </div>
+            </div>
+        </section>
+
+        <section id="dose" class="card">
+            <h2><i class="fas fa-dna"></i> سیستم هوشمند تعیین دوز دارو بر اساس ژنتیک</h2>
+            <p class="section-description">با وارد کردن اطلاعات بیمار و نشانگر ژنتیکی، دوز اولیه دارو محاسبه می‌شود.</p>
+            
+            <div class="dose-calculator">
+                <div class="search-section" style="grid-column: 1/-1; margin-bottom: 15px;">
+                    <label for="drugSearch"><i class="fas fa-search"></i> جستجوی دارو:</label>
+                    <input type="text" id="drugSearch" placeholder="نام دارو را وارد کنید..." onkeyup="searchDrugs()" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px;">
+                </div>
+                
+                <div class="input-group">
+                    <label for="weight"><i class="fas fa-weight"></i> وزن بیمار (کیلوگرم):</label>
+                    <input type="number" id="weight" min="20" max="200" value="70" step="0.1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="age"><i class="fas fa-birthday-cake"></i> سن بیمار:</label>
+                    <input type="number" id="age" min="1" max="120" value="45">
+                </div>
+                
+                <div class="input-group">
+                    <label for="geneticMarker"><i class="fas fa-dna"></i> نشانگر ژنتیکی متابولیسم دارو:</label>
+                    <select id="geneticMarker">
+                        <option value="normal">متابولیسم نرمال</option>
+                        <option value="slow_metabolizer">متابولیسم آهسته</option>
+                        <option value="fast_metabolizer">متابولیسم سریع</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="drugName"><i class="fas fa-pills"></i> نام دارو:</label>
+                    <select id="drugName" size="5" style="height: auto; min-height: 120px;">
+                        <option value="">در حال بارگذاری...</option>
+                    </select>
+                </div>
+                
+                <button class="btn calculate-btn" onclick="calculateDose()" style="grid-column: 1/-1;">
+                    <i class="fas fa-calculator"></i> محاسبه دوز توصیه‌شده
+                </button>
+                
+                <div class="dose-result" id="doseResult" style="display: none; grid-column: 1/-1;">
+                    <h4><i class="fas fa-prescription-bottle-alt"></i> نتیجه محاسبه دوز توسط ایلیا</h4>
+                    <div class="result-details">
+                        <p>دارو: <span id="resultDrug"></span></p>
+                        <p>دوز توصیه‌شده: <span id="resultDose"></span> میلی‌گرم</p>
+                        <p>محدوده دوز: <span id="resultRange"></span></p>
+                        <p>نوع متابولیسم: <span id="resultMetabolism"></span></p>
+                        <p>وزن بیمار: <span id="resultWeight"></span> کیلوگرم</p>
+                        <p class="disclaimer" id="doseNotes"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- فوتر -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4><i class="fas fa-hospital"></i> سیستم تصمیم‌یار پزشکی ایلیا</h4>
+                    <p>پروژه ارائه‌شده به جشنواره خوارزمی 1404</p>
+                    <p>تشخیص سرطان پوست، مشاوره پزشکی و تعیین دوز دارو بر اساس ژنتیک</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-envelope"></i> تماس با ما</h4>
+                    <p>برای پرسش‌های فنی و همکاری:</p>
+                    <p>
+                        <i class="fas fa-inbox"></i> 
+                        <a href="mailto:ilia.mohebali91@gmail.com" style="color: var(--primary-jade);">ilya.medical@example.com</a>
+                    </p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4><i class="fas fa-code"></i> فناوری‌های استفاده‌شده</h4>
+                    <ul>
+                        <li>Python Flask & TensorFlow</li>
+                        <li>شبکه عصبی کانولوشنی (CNN)</li>
+                        <li>OpenAI GPT API</li>
+                        <li>HTML5, CSS3, JavaScript</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>
+                    <i class="far fa-copyright"></i> 
+                    کلیه حقوق مادی و معنوی این سامانه متعلق به تیم توسعه ایلیا محبعلی می‌باشد.
+                </p>
+                <p class="copyright">© 1404 - سیستم تصمیم‌یار پزشکی ایلیا</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- جاوا اسکریپت -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
