@@ -218,7 +218,8 @@ def calculate_dose():
     except Exception as e:
         return jsonify({'error': f'خطا در محاسبه دوز: {str(e)}', 'success': False})
 
+
 if __name__ == '__main__':
-    import os
-    port = int(os.environ.get('PORT', 10000))  # Render از PORT=10000 استفاده می‌کند
-    app.run(host='0.0.0.0', port=port, debug=False)  # حتماً host='0.0.0.0' باشد
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=True, host='0.0.0.0', port=port)
